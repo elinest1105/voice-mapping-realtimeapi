@@ -813,9 +813,9 @@ async function navigateToLocation(locationName) {
         // Filter mockupData based on city or address match
         const matchingLocations = mockupData.filter(data => {
             const searchTerm = locationName.toLowerCase();
-            return data.City.toLowerCase().includes(searchTerm) ||
-                   data.Street.toLowerCase().includes(searchTerm) ||
-                   data.Country.toLowerCase().includes(searchTerm);
+            return searchTerm.includes(data.City.toLowerCase()) 
+            || searchTerm.includes(data.Street.toLowerCase()) 
+            || searchTerm.includes(data.Country.toLowerCase());
         });
 
         if (matchingLocations.length === 0) {
