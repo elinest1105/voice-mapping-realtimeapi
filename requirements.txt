@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+httpx
+termcolor
+jinja2
+python-dotenv
+openai
