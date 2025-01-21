@@ -77,8 +77,16 @@ async def read_root(request: Request):
             status_code=500,
             content={"error": "Internal server error"}
         )
+
+@app.get("/session")
+async def create_session():
+    try:
+        print(colored("Creating new session...", "cyan"))
         if not OPENAI_API_KEY:
-            raise ValueError("OpenAI API key not found")
+            print(colored("Error: OpenAI API key not found", "red"))
+            raise HTTPException(status_code=500, detail="OpenAI API key not found")
+
+        print(colored(f"Using API Key: {OPENAI_API_KEY[:4]}... (truncated for security)", "yellow"))  # Log part of the key for debugging
             
         async with httpx.AsyncClient() as client:
             response = await client.post(
