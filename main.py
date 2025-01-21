@@ -2,10 +2,14 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from dotenv import load_dotenv
 import os
 import httpx
 from termcolor import colored
 import psycopg2
+
+# Load the .env file
+load_dotenv()
 
 # Constants
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
