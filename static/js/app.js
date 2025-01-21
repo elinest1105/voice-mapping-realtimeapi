@@ -1,5 +1,7 @@
 import mockupData from "../mockupData.js";
 
+let Info_firstName = false, Info_lastName = false, Info_street = false, Info_city = false, Info_country = false, Info_phoneNumber = false;
+
 // Constants
 let map = null;
 let currentMarker = null;
@@ -124,45 +126,68 @@ async function navigateToLocation(locationName) {
   try {
     // Filter mockupData based on multiple fields
     const searchTerm = locationName.toLowerCase().trim();
-    const matchingLocations = mockupData.filter((data) => {
+
+    const trueArr = [];
+  
+    mockupData.forEach((data) => {
       // Create full name by combining first and last name
       const firstName = (data["First Name"] || "").toLowerCase();
       const lastName = (data["Last Name"] || "").toLowerCase();
-      const fullName = `${firstName} ${lastName}`;
-
+  
       // Create full address
       const street = (data.Street || "").toLowerCase();
       const city = (data.City || "").toLowerCase();
       const country = (data.Country || "").toLowerCase();
-      const fullAddress = `${street} ${city} ${country}`;
-
+  
       // Format phone number (remove spaces and special characters)
       const phoneNumber = (data["Phone Number"] || "").replace(/[\s\-\(\)]/g, "");
-
-      if(searchTerm.includes(fullName)) {
-        return searchTerm.includes(fullName);
+  
+      if(Info_country == false) {
+        if(searchTerm.includes(country)) {
+          trueArr.push({ "Country" : country });
+          Info_country = true;
+        }
       }
-      if(searchTerm.includes(firstName) && !searchTerm.includes(lastName)) {
-        return searchTerm.includes(firstName);
+      if(Info_city == false) {
+        if(searchTerm.includes(city)) {
+          trueArr.push({ "City" : city });
+          Info_city = true;
+        }
       }
-      if(!searchTerm.includes(firstName) && searchTerm.includes(lastName)) {
-          return searchTerm.includes(lastName);
+      if(Info_street == false) {
+        if(searchTerm.includes(street)) {
+          trueArr.push({ "Street" : street });
+          Info_street = true;
+        }
       }
-      if(searchTerm.includes(fullAddress)) {
-        return searchTerm.includes(fullAddress);
+      if(Info_phoneNumber == false) {
+        if(searchTerm.includes(phoneNumber)) {
+          trueArr.push({ "Phone Number" : phoneNumber });
+          Info_phoneNumber = true;
+        }
       }
-      if(searchTerm.includes(street)) {
-        return searchTerm.includes(street);
+      if(Info_firstName == false) {
+        if(searchTerm.includes(firstName)) {
+          trueArr.push({ "First Name" : firstName });
+          Info_firstName = true;
+        }
       }
-      if(searchTerm.includes(city) && !searchTerm.includes(country)) {
-        return searchTerm.includes(city);
+      if(Info_lastName == false) {
+        if(searchTerm.includes(lastName)) {
+          trueArr.push({ "Last Name" : lastName });
+          Info_lastName = true;
+        }
       }
-      if(!searchTerm.includes(city) && searchTerm.includes(country)) {
-        return searchTerm.includes(country);
-      }
-      if(searchTerm.includes(phoneNumber)) {
-        return searchTerm.includes(phoneNumber);
-      }
+    });
+  
+    const matchingLocations = mockupData.filter((data) => {
+      const ere = trueArr.map((tr) => {
+        return data[Object.keys(tr)[0]].toLowerCase() == tr[Object.keys(tr)[0]];
+      });
+      const flag = ere.every((er) => {
+        return er == true;
+      });
+      if(flag == true) return true;
     });
 
     if (matchingLocations.length === 0) {
