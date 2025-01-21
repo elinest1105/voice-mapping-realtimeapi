@@ -1,216 +1,238 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Voice Map Explorer</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Leaflet CSS and JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
     <style>
-        .map-wrapper {
-            position: relative;
-            width: 100%;
-            height: 600px;
-        }
-        #map {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 1rem;
-            background: #aba5a5;
-        }
-        .current-location {
-            position: absolute;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            color: white;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-        .stats-container {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 300px;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 1rem;
-            padding: 1rem;
-            color: white;
-            z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .stats-container canvas {
-            max-height: 150px;
-            margin-bottom: 1rem;
-        }
-        .controls-container {
-            position: absolute;
-            bottom: 1rem;
-            left: 1rem;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            background: rgba(0,0,0,0.7);
-            padding: 1rem;
-            border-radius: 1rem;
-            backdrop-filter: blur(5px);
-            min-width: 200px;
-        }
-        .status-container {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1000;
-            background: rgba(0,0,0,0.7);
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        #messages {
-            margin-top: 1rem;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        .btn-sm {
-            width: 100%;
-        }
-        .leaflet-popup-content-wrapper {
-            background: rgba(0,0,0,0.8);
-            color: white;
-            border-radius: 0.5rem;
-            backdrop-filter: blur(5px);
-        }
-        .leaflet-popup-tip {
-            background: rgba(0,0,0,0.8);
-        }
-        /* Dark theme for map controls */
-        .leaflet-control-zoom a {
-            background: rgba(0,0,0,0.7) !important;
-            color: white !important;
-            border: 1px solid rgba(255,255,255,0.2) !important;
-        }
-        .leaflet-control-zoom a:hover {
-            background: rgba(50,50,50,0.9) !important;
-        }
-        /* Dark theme for attribution */
-        .leaflet-control-attribution {
-            background: rgba(0,0,0,0.7) !important;
-            color: rgba(255,255,255,0.7) !important;
-        }
-        .leaflet-control-attribution a {
-            color: rgba(255,255,255,0.9) !important;
-        }
-        /* Layer control styling */
-        .leaflet-control-layers {
-            background: rgba(0,0,0,0.8) !important;
-            border: 1px solid rgba(255,255,255,0.2) !important;
-            border-radius: 0.5rem !important;
-            backdrop-filter: blur(5px);
-            color: white !important;
-            padding: 0.5rem !important;
-        }
-        .leaflet-control-layers label {
-            color: white !important;
-            margin: 0.25rem 0;
-        }
-        .leaflet-control-layers-list {
-            margin: 0.5rem 0 !important;
-        }
-        .leaflet-control-layers-base {
-            padding: 0.25rem !important;
-        }
-        .leaflet-control-layers input[type="radio"] {
-            margin-right: 0.5rem !important;
-        }
-        .leaflet-control-layers-expanded {
-            padding: 0.75rem !important;
-            min-width: 200px !important;
-        }
-        /* Custom tooltip style */
-        .poi-tooltip {
-            background: rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 4px;
-            color: white;
-            padding: 4px 8px;
-            font-size: 12px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .poi-tooltip:before {
-            border-top-color: rgba(0,0,0,0.8);
-        }
+      .map-wrapper {
+        position: relative;
+        width: 100%;
+        height: 600px;
+      }
+      #map {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 1rem;
+        background: #aba5a5;
+      }
+      .current-location {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: white;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+      .stats-container {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 300px;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 1rem;
+        color: white;
+        z-index: 1000;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .stats-container canvas {
+        max-height: 150px;
+        margin-bottom: 1rem;
+      }
+      .controls-container {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 1rem;
+        border-radius: 1rem;
+        backdrop-filter: blur(5px);
+        min-width: 200px;
+      }
+      .status-container {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      #messages {
+        margin-top: 1rem;
+        max-height: 150px;
+        overflow-y: auto;
+      }
+      .btn-sm {
+        width: 100%;
+      }
+      .leaflet-popup-content-wrapper {
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        border-radius: 0.5rem;
+        backdrop-filter: blur(5px);
+      }
+      .leaflet-popup-tip {
+        background: rgba(0, 0, 0, 0.8);
+      }
+      /* Dark theme for map controls */
+      .leaflet-control-zoom a {
+        background: rgba(0, 0, 0, 0.7) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      }
+      .leaflet-control-zoom a:hover {
+        background: rgba(50, 50, 50, 0.9) !important;
+      }
+      /* Dark theme for attribution */
+      .leaflet-control-attribution {
+        background: rgba(0, 0, 0, 0.7) !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+      }
+      .leaflet-control-attribution a {
+        color: rgba(255, 255, 255, 0.9) !important;
+      }
+      /* Layer control styling */
+      .leaflet-control-layers {
+        background: rgba(0, 0, 0, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 0.5rem !important;
+        backdrop-filter: blur(5px);
+        color: white !important;
+        padding: 0.5rem !important;
+      }
+      .leaflet-control-layers label {
+        color: white !important;
+        margin: 0.25rem 0;
+      }
+      .leaflet-control-layers-list {
+        margin: 0.5rem 0 !important;
+      }
+      .leaflet-control-layers-base {
+        padding: 0.25rem !important;
+      }
+      .leaflet-control-layers input[type="radio"] {
+        margin-right: 0.5rem !important;
+      }
+      .leaflet-control-layers-expanded {
+        padding: 0.75rem !important;
+        min-width: 200px !important;
+      }
+      /* Custom tooltip style */
+      .poi-tooltip {
+        background: rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        color: white;
+        padding: 4px 8px;
+        font-size: 12px;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .poi-tooltip:before {
+        border-top-color: rgba(0, 0, 0, 0.8);
+      }
     </style>
-</head>
-<body class="min-h-screen bg-base-300">
+  </head>
+  <body class="min-h-screen bg-base-300">
     <div class="container mx-auto p-4">
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <h2 class="card-title text-primary">Voice Map Explorer</h2>
-                
-                <div class="map-wrapper">
-                    <div id="map"></div>
-                    <div class="current-location" id="currentLocation">Current: Not Selected</div>
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title text-primary">Voice Map Explorer</h2>
 
-                    <div class="status-container">
-                        <div id="statusIndicator" class="w-3 h-3 rounded-full bg-error"></div>
-                        <span id="statusText" class="text-sm text-white">Disconnected</span>
-                    </div>
-
-                    <div class="controls-container">
-                        <button id="startButton" class="btn btn-primary btn-sm">
-                            Start Voice Navigation
-                        </button>
-                        <button id="stopButton" class="btn btn-error btn-sm" disabled>
-                            Stop Voice Navigation
-                        </button>
-                    </div>
-
-                    <div id="cityStats" class="stats-container hidden">
-                        <h3 class="text-lg font-bold mb-3 text-primary" id="cityStatsTitle">Location Statistics</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <h4 class="text-sm mb-2 opacity-80">Population Trend</h4>
-                                <canvas id="populationChart"></canvas>
-                            </div>
-                            <div>
-                                <h4 class="text-sm mb-2 opacity-80">Climate</h4>
-                                <canvas id="climateChart"></canvas>
-                            </div>
-                            <div>
-                                <h4 class="text-sm mb-2 opacity-80">Key Facts</h4>
-                                <div id="keyFacts" class="text-xs space-y-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="loadingAnimation" class="hidden mt-4">
-                    <span class="loading loading-dots loading-lg text-primary"></span>
-                </div>
-
-                <div id="messages" class="mt-4 p-4 bg-base-200 rounded-lg overflow-y-auto"></div>
+          <div class="map-wrapper">
+            <div id="map"></div>
+            <div class="current-location" id="currentLocation">
+              Current: Not Selected
             </div>
+
+            <div class="status-container">
+              <div
+                id="statusIndicator"
+                class="w-3 h-3 rounded-full bg-error"
+              ></div>
+              <span id="statusText" class="text-sm text-white"
+                >Disconnected</span
+              >
+            </div>
+
+            <div class="controls-container">
+              <button id="startButton" class="btn btn-primary btn-sm">
+                Start Voice Navigation
+              </button>
+              <button id="stopButton" class="btn btn-error btn-sm" disabled>
+                Stop Voice Navigation
+              </button>
+            </div>
+
+            <div id="cityStats" class="stats-container hidden">
+              <h3
+                class="text-lg font-bold mb-3 text-primary"
+                id="cityStatsTitle"
+              >
+                Location Statistics
+              </h3>
+              <div class="space-y-4">
+                <div>
+                  <h4 class="text-sm mb-2 opacity-80">Population Trend</h4>
+                  <canvas id="populationChart"></canvas>
+                </div>
+                <div>
+                  <h4 class="text-sm mb-2 opacity-80">Climate</h4>
+                  <canvas id="climateChart"></canvas>
+                </div>
+                <div>
+                  <h4 class="text-sm mb-2 opacity-80">Key Facts</h4>
+                  <div id="keyFacts" class="text-xs space-y-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="loadingAnimation" class="hidden mt-4">
+            <span class="loading loading-dots loading-lg text-primary"></span>
+          </div>
+
+          <div
+            id="messages"
+            class="mt-4 p-4 bg-base-200 rounded-lg overflow-y-auto"
+          ></div>
         </div>
+      </div>
     </div>
 
-    <script src="/static/js/app.js"></script>
-</body>
-</html> 
+    <script type="module" src="/static/js/app.js"></script>
+  </body>
+</html>

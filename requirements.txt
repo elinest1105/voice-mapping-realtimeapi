@@ -5,3 +5,5 @@ termcolor
 jinja2
 python-dotenv
 openai
+sqlalchemy
+psycopg2-binary
