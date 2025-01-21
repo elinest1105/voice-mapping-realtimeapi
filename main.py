@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -102,10 +102,13 @@ async def create_session():
             )
             
             if response.status_code != 200:
-                raise ValueError("Failed to create OpenAI session")
+                raise HTTPException(status_code=response.status_code, detail="Failed to create OpenAI session")
                 
             print(colored("Session created successfully!", "green"))
             return response.json()
+    except HTTPException as he:
+        print(colored(f"HTTP Error creating session: {str(he.detail)}", "red"))
+        raise he
     except Exception as e:
         print(colored(f"Error creating session: {str(e)}", "red"))
         return JSONResponse(
