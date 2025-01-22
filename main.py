@@ -13,6 +13,7 @@ load_dotenv()
 
 # Constants
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+print(OPENAI_API_KEY)
 MODEL = "gpt-4o-realtime-preview-2024-12-17"
 DB_PARAMS = {
     "dbname": os.getenv("POSTGRES_DB"),
@@ -119,7 +120,7 @@ async def create_session():
             status_code=500,
             content={"error": "Failed to create session"}
         )
-
+    
 @app.get("/favicon.ico")
 async def get_favicon():
     return StaticFiles(directory="static").get_response("favicon.ico")
@@ -127,4 +128,4 @@ async def get_favicon():
 if __name__ == "__main__":
     import uvicorn
     print(colored("Starting server...", "yellow"))
-    uvicorn.run("main:app", host="127.0.0.1", port=5000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=7000, reload=True)
